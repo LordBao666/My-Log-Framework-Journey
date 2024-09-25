@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <!--  ConsoleAppender  Demo   -->
+    <!-- 采用property自定义属性.如下自定义的pattern属性，用于指定日志格式   -->
+    <property name="pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- appender 用于指定日志的输出目标，如控制台，文件等.如下指定的Appender是控制台   -->
+    <!-- name用于命名appender名称,保证可读性即可   -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+        <!--
+         输出目标的配置，
+          System.out：以黑色字体（默认）
+          System.err：红色字体
+        -->
+        <target>
+            System.err
+        </target>
+
+        <!-- 指定日志格式       -->
+        <!-- 了解：PatternLayoutEncoder 是 Logback 默认的编码器.无需显式声明该编码器-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+
+            <!--   过滤器     -->
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>WARN</level>-->
+<!--            &lt;!&ndash;高于level中设置的级别，则打印日志&ndash;&gt;-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            &lt;!&ndash;低于level中设置的级别，则屏蔽&ndash;&gt;-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
+    </appender>
+
+    <!-- FileAppender Demo   -->
+    <!-- 如下是FileAppender,将日志输出到指定文件   -->
+        <!-- 绝对路径   -->
+    <property name="logDir" value="D:/logDir"/>
+        <!--  相对于本模块(LogBack)为根路径  -->
+<!--    <property name="logDir" value="logDir"/>-->
+    <property name="logFile" value="mylog.log"/>
+    <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${logDir}/${logFile}</file>
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- FileAppender Demo  2 -->
+   <!-- HTML File Appender   -->
+    <property name="htmlLogDir" value="D:/logDir"/>
+    <property name="htmlLogFile" value="mylog.html"/>
+    <appender name="htmlFileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${htmlLogDir}/${htmlLogFile}</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>${pattern}</pattern>
+            </layout>
+
+        </encoder>
+    </appender>
+
+    <!-- RollAppender Demo -->
+    <!-- 日志归档Appender   -->
+    <property name="rollLogDir" value="D:/logDir"/>
+    <property name="rollLogFile" value="mylog.log"/>
+    <appender name="rollFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${rollLogDir}/${rollLogFile}</file>
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+        <!--指定拆分规则-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--按照时间和压缩格式声明文件名，压缩格式gz-->
+            <fileNamePattern>${rollLogDir}/mylog.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>2KB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+
+    <!-- AsyncAppender Demo   -->
+    <appender name="asyncAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 引入其他Appender，即可完成异步日志记录功能       -->
+        <appender-ref ref="STDOUT"/>
+    </appender>
+
+    <!--
+     日志记录器配置，可以配置多个Appender，进行多方向的日志输出
+     root => rootLogger
+     level:  表示日志级别.可以是ALL,TRACE,DEBUG,INFO,WARN,ERROR,OFF.
+     指定级别后,将记录级别及级别以上的日志信息.
+    -->
+    <root level="ALL">
+        <!-- 注意与之前的appender名称对应 -->
+<!--        <appender-ref ref="STDOUT"/>-->
+<!--        <appender-ref ref="fileAppender"/>-->
+<!--        <appender-ref ref="htmlFileAppender"/>-->
+<!--            <appender-ref ref="rollFileAppender"/>-->
+<!--        <appender-ref ref="asyncAppender"/>-->
+    </root>
+
+    <!-- 自定义logger
+      name用于指定全路径(包括类名,比如com.lordbao.servie.UserService),路径之间有层级关系.
+      com 的层级高于 com.lorbao的层级。root标签的层级最高.
+      level 指定logger 记录的日志级别
+      additivity 表示是否将捕获的日志向上传递，默认是true.但一般设置为false，表示不想上传递.
+    -->
+    <logger name="com.lordbao" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+</configuration>
