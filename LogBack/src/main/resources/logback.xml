@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <!-- 关闭LogBack 框架自身的日志输出   -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
     <!--  ConsoleAppender  Demo   -->
     <!-- 采用property自定义属性.如下自定义的pattern属性，用于指定日志格式   -->
     <property name="pattern"
@@ -74,8 +76,17 @@
         <!--指定拆分规则-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--按照时间和压缩格式声明文件名，压缩格式gz-->
-            <fileNamePattern>${rollLogDir}/mylog.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <maxFileSize>2KB</maxFileSize>
+<!--            <fileNamePattern>${rollLogDir}/mylog.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>-->
+            <fileNamePattern>${rollLogDir}/%d{yyyy-MM-dd}/mylog.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+            <!-- 限制单个日志文件的最大大小为 1MB -->
+            <maxFileSize>1MB</maxFileSize>
+
+            <!-- 保留最多 30 天的日志文件，超过30天的日志文件会被删除 -->
+            <maxHistory>30</maxHistory>
+
+            <!-- 限制日志文件总大小为 1GB，超过此大小将删除最早的文件 -->
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -97,7 +108,7 @@
 <!--        <appender-ref ref="STDOUT"/>-->
 <!--        <appender-ref ref="fileAppender"/>-->
 <!--        <appender-ref ref="htmlFileAppender"/>-->
-<!--            <appender-ref ref="rollFileAppender"/>-->
+            <appender-ref ref="rollFileAppender"/>
 <!--        <appender-ref ref="asyncAppender"/>-->
     </root>
 
@@ -107,7 +118,7 @@
       level 指定logger 记录的日志级别
       additivity 表示是否将捕获的日志向上传递，默认是true.但一般设置为false，表示不想上传递.
     -->
-    <logger name="com.lordbao" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
+<!--    <logger name="com.lordbao" level="INFO" additivity="false">-->
+<!--        <appender-ref ref="STDOUT"/>-->
+<!--    </logger>-->
 </configuration>
