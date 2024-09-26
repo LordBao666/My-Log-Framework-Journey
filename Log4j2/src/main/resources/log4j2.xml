@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+log4j2配置标签首字母一般为大写
+logback有些配置是使用的子标签的配置，而在log4j2中使用的是属性的方式进行配置
+
+SYSTEM_ERR: 红色字体输出
+SYSTEM_OUT: 黑色字体输出(默认值)
+
+Configuration 标签添加属性
+    status=“debug” 日志框架本身的日志输出级别. 一般保持status="off"，或者说压根不写该属性
+    monitorInterval="5" 自动加载日志配置文件的间隔时间， 单位 秒. 这个配置可以不管.
+-->
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+    <Properties>
+        <Property name="logDir" value="D:/mylog"/>
+        <Property name="logFile" value="mylog.log"/>
+        <Property name="pattern"
+                  value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} %M - %msg%n"/>
+
+        <Property name="rollLogDir" value="D:/mylog"/>
+        <Property name="rollFile" value="myRollLog.log"/>
+        <!-- $${date:yyyy-MM-dd} : 根据日期当天，创建一个文件夹，
+             例如：2021-12-26，记录当前的所有日志信息（拆分出来的日志放在这个文件夹中）-->
+        <Property name="rollPattern" value="${rollLogDir}/$${date:yyyy-MM-dd}/mylog.%d{yyyy-MM-dd}.%i.log"/>
+            <!-- 以.gz格式压缩       -->
+<!--        <Property name="rollPattern" value="${rollLogDir}/$${date:yyyy-MM-dd}/mylog.%d{yyyy-MM-dd}.%i.log.gz"/>-->
+    </Properties>
+
+    <Appenders>
+       <!-- 控制台Appender       -->
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${pattern}"/>
+        </Console>
+
+       <!-- 文件Appender       -->
+<!--        <File name="fileAppender" fileName="${logDir}/${logFile}">-->
+<!--            <PatternLayout pattern="${pattern}"/>-->
+<!--        </File>-->
+        
+      <!-- RollingAppender 用于日志拆分归档
+            fileName: 日志文件的名字
+            filePattern: 日志文件拆分后文件的命名规则-->
+        <RollingFile name="rollingFileAppender"
+                     fileName="${rollLogDir}/${rollFile}"
+                     filePattern="${rollPattern}">
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <!--在系统启动时，触发拆分规则，产生一个日志文件-->
+                <OnStartupTriggeringPolicy/>
+                <!--按照文件大小拆分,当fileName属性指定的文件超过该大小时，触发拆分事件-->
+                <SizeBasedTriggeringPolicy size="64KB"/>
+                <!--按照时间节点拆分，拆分规则就是filePattern-->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!--在同一目录下，文件的个数限制30个，如果超出了设置的规则，则根据时间进行覆盖，新的覆盖旧的
+                谨慎使用此标签
+             -->
+            <DefaultRolloverStrategy max="30" />
+
+        </RollingFile>
+
+        <!--异步日志 AsyncAppender方式-->
+        <Async name="asyncAppender">
+            <AppenderRef ref="consoleAppender"/>
+        </Async>
+    </Appenders>
+
+    <!-- 可以配置N多个Logger，包括Root和自定义Logger-->
+    <Loggers>
+        <!-- 一个logger 可以引用多个Appender      -->
+        <Root level="trace">
+            <AppenderRef ref="consoleAppender"/>
+<!--            <AppenderRef ref="fileAppender"/>-->
+<!--            <AppenderRef ref="rollingFileAppender"/>-->
+<!--            <AppenderRef ref="asyncAppender"/>-->
+        </Root>
+
+  <!--
+       异步记录日志
+       includeLocation="false" %caller、%M、%line 等将会忽略，以保证异步日志性能
+       additivity="false" 表示不继承rootLogger
+
+       本案例中，com.lordbao包下的日志输出为异步日志，在其他包下的日志输出为非异步日志，不影响上面的rootLogger同步输出，此为混合异步配置
+   -->
+        <AsyncLogger name="com.lordbao" level="trace" includeLocation="false" additivity="false">
+            <!--将控制台输出consoleAppender设置为异步-->
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+
+
+    </Loggers>
+</Configuration>
