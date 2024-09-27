@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: LogInSpringBoot
+#    推荐用标准的日志配置文件
+#logging:
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+#    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+#  level:
+#    root: warn
+#    com.lordbao: info
+#  file:
+#    name: D:/mylog/mylog.log
