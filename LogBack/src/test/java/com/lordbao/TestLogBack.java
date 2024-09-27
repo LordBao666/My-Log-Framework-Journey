@@ -59,7 +59,7 @@ public class TestLogBack {
 
     @Test
     public void testAsyncAppender(){
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 4000; i++) {
             logger.trace("trace"+i);
             logger.debug("debug"+i);
             logger.info("info"+i);

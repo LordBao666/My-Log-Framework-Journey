@@ -2,6 +2,7 @@
 <configuration>
     <!-- 关闭LogBack 框架自身的日志输出   -->
     <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
     <!--  ConsoleAppender  Demo   -->
     <!-- 采用property自定义属性.如下自定义的pattern属性，用于指定日志格式   -->
     <property name="pattern"
@@ -26,12 +27,10 @@
             <pattern>${pattern}</pattern>
         </encoder>
 
-            <!--   过滤器     -->
+            <!--   过滤器有2类，一类为LevelFilter，一类为ThresholdFilter  -->
 <!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
 <!--            <level>WARN</level>-->
-<!--            &lt;!&ndash;高于level中设置的级别，则打印日志&ndash;&gt;-->
 <!--            <onMatch>ACCEPT</onMatch>-->
-<!--            &lt;!&ndash;低于level中设置的级别，则屏蔽&ndash;&gt;-->
 <!--            <onMismatch>DENY</onMismatch>-->
 <!--        </filter>-->
     </appender>
@@ -79,7 +78,7 @@
 <!--            <fileNamePattern>${rollLogDir}/mylog.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>-->
             <fileNamePattern>${rollLogDir}/%d{yyyy-MM-dd}/mylog.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
-            <!-- 限制单个日志文件的最大大小为 1MB -->
+            <!-- 限制单个日志文件的最大大小-->
             <maxFileSize>1MB</maxFileSize>
 
             <!-- 保留最多 30 天的日志文件，超过30天的日志文件会被删除 -->
@@ -105,10 +104,10 @@
     -->
     <root level="ALL">
         <!-- 注意与之前的appender名称对应 -->
-<!--        <appender-ref ref="STDOUT"/>-->
+        <appender-ref ref="STDOUT"/>
 <!--        <appender-ref ref="fileAppender"/>-->
 <!--        <appender-ref ref="htmlFileAppender"/>-->
-            <appender-ref ref="rollFileAppender"/>
+<!--            <appender-ref ref="rollFileAppender"/>-->
 <!--        <appender-ref ref="asyncAppender"/>-->
     </root>
 
@@ -116,9 +115,9 @@
       name用于指定全路径(包括类名,比如com.lordbao.servie.UserService),路径之间有层级关系.
       com 的层级高于 com.lorbao的层级。root标签的层级最高.
       level 指定logger 记录的日志级别
-      additivity 表示是否将捕获的日志向上传递，默认是true.但一般设置为false，表示不想上传递.
+      additivity 表示是否将捕获的日志向上传递.
     -->
-<!--    <logger name="com.lordbao" level="INFO" additivity="false">-->
-<!--        <appender-ref ref="STDOUT"/>-->
-<!--    </logger>-->
+    <logger name="com.lordbao" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 </configuration>

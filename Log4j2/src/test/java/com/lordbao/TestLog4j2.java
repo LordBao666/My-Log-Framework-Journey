@@ -34,7 +34,7 @@ public class TestLog4j2 {
 
     @Test
     public void  testRollFileAppender(){
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 4000; i++) {
             logger.trace("trace"+i);
             logger.debug("debug"+i);
             logger.info("info"+i);
